@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hs.dao.SmbmsUserDao">
+	<!-- 增加用户 -->
+	<insert id="addSmbmsUser" parameterType="SmbmsUser">
+		INSERT INTO
+		smbms_user(
+		<trim suffixOverrides=",">
+			<if test="id != null">id,</if>
+			<if test="userCode != null">userCode,</if>
+			<if test="userName != null">userName,</if>
+			<if test="userPassword != null">userPassword,</if>
+			<if test="gender != null">gender,</if>
+			<if test="birthday != null">birthday,</if>
+			<if test="phone != null">phone,</if>
+			<if test="address != null">address,</if>
+			<if test="userRole != null">userRole,</if>
+			<if test="createdBy != null">createdBy,</if>
+			<if test="creationDate != null">creationDate,</if>
+			<if test="modifyBy != null">modifyBy,</if>
+			<if test="modifyDate != null">modifyDate,</if>
+		</trim>)
+		VALUES
+		(<trim suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="userCode != null">#{userCode},</if>
+			<if test="userName != null">#{userName},</if>
+			<if test="userPassword != null">#{userPassword},</if>
+			<if test="gender != null">#{gender},</if>
+			<if test="birthday != null">#{birthday},</if>
+			<if test="phone != null">#{phone},</if>
+			<if test="address != null">#{address},</if>
+			<if test="userRole != null">#{userRole},</if>
+			<if test="createdBy != null">#{createdBy},</if>
+			<if test="creationDate != null">#{creationDate},</if>
+			<if test="modifyBy != null">#{modifyBy},</if>
+			<if test="modifyDate != null">#{modifyDate},</if>
+		</trim>);
+	</insert>
+
+	<!-- 根据用户id修改信息 -->
+	<update id="updateSmbmsUser" parameterType="SmbmsUser">
+		UPDATE smbms_user
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userCode != null">userCode = #{userCode},</if>
+			<if test="userName != null">userName = #{userName},</if>
+			<if test="userPassword != null">userPassword = #{userPassword},</if>
+			<if test="gender != null">gender = #{gender},</if>
+			<if test="birthday != null">birthday = #{birthday},</if>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="userRole != null">userRole = #{userRole},</if>
+			<if test="createdBy != null">createdBy = #{createdBy},</if>
+			<if test="creationDate != null">creationDate = #{creationDate},</if>
+			<if test="modifyBy != null">modifyBy = #{modifyBy},</if>
+			<if test="modifyDate != null">modifyDate = #{modifyDate},</if>
+		</trim>
+		WHERE id = #{id};
+	</update>
+
+	<!-- 根据用户id删除信息 -->
+	<delete id="deleteSmbmsUser" parameterType="java.lang.Integer">
+		DELETE FROM
+		smbms_user WHERE id = #{id};
+	</delete>
+
+	<!-- 根据用户id查看信息 -->
+	<select id="getSmbmsUserById" resultType="SmbmsUser"
+		parameterType="java.lang.Integer">
+		SELECT u.*,r.roleName FROM smbms_user u INNER JOIN smbms_role r ON
+		u.userRole = r.id WHERE u.id = #{id};
+	</select>
+
+	<!-- 登陆 -->
+	<select id="login" resultType="SmbmsUser" parameterType="SmbmsUser">
+		SELECT *
+		FROM smbms_user WHERE userCode = #{userCode} and userPassword =
+		#{userPassword}
+	</select>
+
+	<!-- 分页显示用户信息列表 -->
+	<select id="getSmbmsUserByPage" resultType="SmbmsUser">
+		SELECT u.*,r.roleName FROM smbms_user u INNER JOIN smbms_role r ON
+		u.userRole = r.id
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="userName != null and userName != ''">
+				and userName like CONCAT('%',#{userName},'%')
+			</if>
+			<if test="userRole != null and userRole != 0">
+				and userRole = #{userRole}
+			</if>
+		</trim>
+		limit #{page},#{pageSize}
+	</select>
+
+	<!-- 查询用户表总记录 -->
+	<select id="getAllSmbmsUser" resultType="java.lang.Integer">
+		SELECT count(1) FROM smbms_user u INNER JOIN smbms_role r ON
+		u.userRole = r.id
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="userName != null and userName != ''">
+				and userName like CONCAT('%',#{userName},'%')
+			</if>
+			<if test="userRole != null and userRole != 0">
+				and userRole = #{userRole}
+			</if>
+		</trim>
+	</select>
+	
+	<select id="userCompare" resultType="java.lang.Integer" parameterType="String">
+		select count(1) from smbms_user where userCode = #{userCode}
+	</select>
+</mapper>
